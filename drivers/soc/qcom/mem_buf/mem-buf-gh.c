@@ -1112,6 +1112,8 @@ struct dma_buf *mem_buf_retrieve(struct mem_buf_retrieve_kernel_arg *arg)
 	buffer->sg_table = *sgt;
 	kfree(sgt);
 
+	INIT_LIST_HEAD(&buffer->iommu_data.map_list);
+	mutex_init(&buffer->iommu_data.lock);
 	INIT_LIST_HEAD(&buffer->attachments);
 	mutex_init(&buffer->lock);
 	buffer->heap = NULL;

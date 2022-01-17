@@ -338,6 +338,8 @@ static struct dma_buf *cma_heap_allocate(struct dma_heap *heap,
 	for (pg = 0; pg < pagecount; pg++)
 		buffer->pages[pg] = &cma_pages[pg];
 
+	INIT_LIST_HEAD(&buffer->iommu_data.map_list);
+	mutex_init(&buffer->iommu_data.lock);
 	buffer->cma_pages = cma_pages;
 	buffer->heap = cma_heap;
 	buffer->pagecount = pagecount;

@@ -450,6 +450,8 @@ static struct dma_buf *system_heap_allocate(struct dma_heap *heap,
 
 	sys_heap = dma_heap_get_drvdata(heap);
 
+	INIT_LIST_HEAD(&buffer->iommu_data.map_list);
+	mutex_init(&buffer->iommu_data.lock);
 	INIT_LIST_HEAD(&buffer->attachments);
 	mutex_init(&buffer->lock);
 	buffer->heap = heap;

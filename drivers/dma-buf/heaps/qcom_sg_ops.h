@@ -19,6 +19,7 @@
 #include <linux/mem-buf-exporter.h>
 
 #include "deferred-free-helper.h"
+#include <linux/msm_dma_iommu_mapping.h>
 
 struct qcom_sg_buffer {
 	struct dma_heap *heap;
@@ -32,6 +33,7 @@ struct qcom_sg_buffer {
 	struct mem_buf_vmperm *vmperm;
 	struct deferred_freelist_item deferred_free;
 	void (*free)(struct qcom_sg_buffer *buffer);
+	struct msm_iommu_data iommu_data;
 };
 
 struct dma_heap_attachment {

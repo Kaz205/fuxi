@@ -162,6 +162,8 @@ static struct dma_buf *__carveout_heap_allocate(struct carveout_heap *carveout_h
 		return ERR_PTR(-ENOMEM);
 
 	/* Initialize the buffer */
+	INIT_LIST_HEAD(&buffer->iommu_data.map_list);
+	mutex_init(&buffer->iommu_data.lock);
 	INIT_LIST_HEAD(&buffer->attachments);
 	mutex_init(&buffer->lock);
 	buffer->heap = carveout_heap->heap;
