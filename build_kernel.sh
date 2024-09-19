@@ -1,6 +1,6 @@
 export ARCH=arm64
 export SUBARCH=arm64
-export ak=$HOME/AnyKernel3
+export ak=$HOME/AnyKernel3_fuxi
 export PATH="$HOME/llvm/bin:$PATH"
 
 NAME=$(git describe --exact-match --tags 2> /dev/null || git rev-parse --short HEAD)
@@ -15,3 +15,8 @@ if [ $? -ne 0 ]
 then
     exit 1
 fi
+
+cp out/arch/arm64/boot/Image $ak/Image
+cd $ak
+zip -FSr9 $NAME.zip ./*  -x "*.zip"
+echo "Kernel zip name: $NAME"
