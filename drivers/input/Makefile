@@ -39,10 +39,8 @@ ifneq (, $(filter $(word 2,$(subst _, ,$(TARGET_PRODUCT))), nuwa))
         KBUILD_CPPFLAGS += -DQCOM_HAPTIC_F0_PROTECT
 endif
 
-ifneq (, $(filter $(word 2,$(subst _, ,$(TARGET_PRODUCT))), fuxi))
-        KBUILD_CPPFLAGS += -DCONFIG_TARGET_PRODUCT_FUXI
-        KBUILD_CPPFLAGS += -DQCOM_HAPTIC_F0_PROTECT
-endif
+KBUILD_CPPFLAGS += -DCONFIG_TARGET_PRODUCT_FUXI
+KBUILD_CPPFLAGS += -DQCOM_HAPTIC_F0_PROTECT
 
 ifneq (, $(filter $(word 2,$(subst _, ,$(TARGET_PRODUCT))), vermeer))
         KBUILD_CPPFLAGS += -DCONFIG_TARGET_PRODUCT_VERMEER
