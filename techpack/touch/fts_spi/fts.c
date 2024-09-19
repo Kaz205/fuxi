@@ -4747,7 +4747,8 @@ static irqreturn_t fts_event_handler(int irq, void *ts_info)
 	lpm_disable_for_dev(true, EVENT_INPUT);
 #endif
 	info->temp_touch_id = 0;
-	cpu_latency_qos_add_request(&info->pm_qos_req_irq, 0);
+	cpu_latency_qos_update_request(&info->pm_qos_req_irq, 100);
+	cpu_latency_qos_update_request(&info->pm_qos_req_spi, 100);
 	if (info->enable_touch_raw) {
 		count = fts_read_thp_frame(info);
 		copy_touch_rawdata((u8 *)(&info->thp_frame), count);
@@ -4818,7 +4819,8 @@ static irqreturn_t fts_event_handler(int irq, void *ts_info)
 #endif
 
 end:
-	cpu_latency_qos_remove_request(&info->pm_qos_req_irq);
+	cpu_latency_qos_update_request(&info->pm_qos_req_irq, PM_QOS_CPU_LATENCY_DEFAULT_VALUE);
+	cpu_latency_qos_update_request(&info->pm_qos_req_spi, PM_QOS_CPU_LATENCY_DEFAULT_VALUE);
 	pm_relax(info->dev);
 	return IRQ_HANDLED;
 }
@@ -9200,6 +9202,12 @@ static int fts_probe(struct spi_device *client)
 	info->tp_selftest_proc =
 		proc_create("tp_selftest", 0644, NULL, &fts_selftest_ops);
 
+	info->pm_qos_req_irq.irq = client->irq;
+	info->pm_qos_req_irq.type = PM_QOS_REQ_AFFINE_IRQ;
+	cpu_latency_qos_add_request(&info->pm_qos_req_irq, PM_QOS_CPU_LATENCY_DEFAULT_VALUE);
+	info->pm_qos_req_spi.irq = geni_spi_get_master_irq(client);
+	info->pm_qos_req_spi.type = PM_QOS_REQ_AFFINE_IRQ;
+	cpu_latency_qos_add_request(&info->pm_qos_req_spi, PM_QOS_CPU_LATENCY_DEFAULT_VALUE);
 #ifdef FTS_FW_UPDATE
 #ifdef FW_UPDATE_ON_PROBE
 	logError(1, "%s FW Update and Sensing Initialization: \n", tag);
@@ -9369,6 +9377,10 @@ ProbeErrorExit_8:
 	info->fts_tp_class = NULL;
 */
 ProbeErrorExit_7:
+	if (cpu_latency_qos_request_active(&info->pm_qos_req_irq))
+		cpu_latency_qos_remove_request(&info->pm_qos_req_irq);
+	if (cpu_latency_qos_request_active(&info->pm_qos_req_spi))
+		cpu_latency_qos_remove_request(&info->pm_qos_req_spi);
 	if (info->tp_selftest_proc)
 		remove_proc_entry("tp_selftest", NULL);
 	info->tp_selftest_proc = NULL;
