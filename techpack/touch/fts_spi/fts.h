@@ -42,6 +42,7 @@
 #include <linux/pm_qos.h>
 #include <linux/sched.h>
 #include <uapi/linux/sched/types.h>
+#include <linux/spi/spi-msm-geni.h>
 
 /****************** CONFIGURATION SECTION ******************/
 /** @defgroup conf_section	 Driver Configuration Section
@@ -349,6 +350,7 @@ struct fts_ts_info {
 	struct workqueue_struct *irq_wq;
 	struct workqueue_struct *touch_feature_wq;
 	struct pm_qos_request pm_qos_req_irq;
+	struct pm_qos_request pm_qos_req_spi;
 
 #ifndef FW_UPDATE_ON_PROBE
 	struct delayed_work fwu_work;
