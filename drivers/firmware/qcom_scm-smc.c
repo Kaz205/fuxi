@@ -23,7 +23,7 @@ static bool hab_calling_convention;
 static DEFINE_MUTEX(qcom_scm_lock);
 
 #define QCOM_SCM_EBUSY_WAIT_MS 30
-#define QCOM_SCM_EBUSY_MAX_RETRY 20
+#define QCOM_SCM_EBUSY_MAX_RETRY 200
 
 #define SCM_SMC_N_REG_ARGS	4
 #define SCM_SMC_FIRST_EXT_IDX	(SCM_SMC_N_REG_ARGS - 1)
@@ -190,8 +190,10 @@ static int __scm_smc_do(struct device *dev, struct arm_smccc_args *smc,
 
 		if (res->a0 == QCOM_SCM_V2_EBUSY) {
 			if (retry_count++ > QCOM_SCM_EBUSY_MAX_RETRY ||
-				(call_type == QCOM_SCM_CALL_NORETRY))
+				(call_type == QCOM_SCM_CALL_NORETRY)) {
+				pr_info("AAAA: retry max");
 				break;
+			}
 			msleep(QCOM_SCM_EBUSY_WAIT_MS);
 		}
 	}  while (res->a0 == QCOM_SCM_V2_EBUSY);
