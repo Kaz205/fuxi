@@ -403,7 +403,7 @@ include $(srctree)/scripts/subarch.include
 # Alternatively CROSS_COMPILE can be set in the environment.
 # Default value for CROSS_COMPILE is not to prefix executables
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
-ARCH		?= $(SUBARCH)
+ARCH		:= arm64
 
 # Architecture as present in compile.h
 UTS_MACHINE 	:= $(ARCH)
@@ -453,6 +453,8 @@ CONFIG_SHELL := sh
 HOST_LFS_CFLAGS := $(shell getconf LFS_CFLAGS 2>/dev/null)
 HOST_LFS_LDFLAGS := $(shell getconf LFS_LDFLAGS 2>/dev/null)
 HOST_LFS_LIBS := $(shell getconf LFS_LIBS 2>/dev/null)
+
+LLVM := 1
 
 ifneq ($(LLVM),)
 HOSTCC	= clang
