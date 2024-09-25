@@ -243,13 +243,15 @@ static int __qcom_mdt_load(struct device *dev, const struct firmware *fw, const 
 	ehdr = (struct elf32_hdr *)fw->data;
 	phdrs = (struct elf32_phdr *)(ehdr + 1);
 
-	fw_name_len = strlen(firmware);
-	if (fw_name_len <= 4)
-		return -EINVAL;
-
 	fw_name = kstrdup(firmware, GFP_KERNEL);
 	if (!fw_name)
 		return -ENOMEM;
+
+	fw_name_len = strlen(firmware);
+	if (fw_name_len <= 4) {
+		dev_err(dev, "error %d is too short, fw_name: %s\n", fw_name_len, fw_name);
+		return -EINVAL;
+	}
 
 	if (pas_init) {
 		metadata = qcom_mdt_read_metadata(dev, fw, firmware, &metadata_len,
