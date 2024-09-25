@@ -221,6 +221,7 @@ static int qcom_scm_call(struct device *dev, const struct qcom_scm_desc *desc,
 	case SMC_CONVENTION_ARM_64:
 		return scm_smc_call(dev, desc, res, QCOM_SCM_CALL_NORMAL);
 	case SMC_CONVENTION_LEGACY:
+		pr_info("AAAA: legacy call used");
 		return scm_legacy_call(dev, desc, res);
 	default:
 		pr_err("Unknown current SCM calling convention.\n");
