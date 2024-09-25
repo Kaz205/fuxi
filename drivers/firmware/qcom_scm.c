@@ -606,12 +606,16 @@ int qcom_scm_pas_init_image(u32 peripheral, dma_addr_t metadata)
 	struct qcom_scm_res res;
 
 	ret = qcom_scm_clk_enable();
-	if (ret)
+	if (ret) {
+		pr_info("scm FAIL");
 		return ret;
+	}
 
 	desc.args[1] = metadata;
 
 	ret = qcom_scm_call(__scm->dev, &desc, &res);
+	if (ret)
+		pr_info("qcom_scm_call FAIL");
 
 	qcom_scm_clk_disable();
 
