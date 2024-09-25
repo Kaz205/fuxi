@@ -146,6 +146,7 @@ static int scm_smc_do_quirk(struct device *dev, struct arm_smccc_args *smc,
 				wait_for_completion(wq);
 				fill_wq_resume_args(smc, smc_call_ctx);
 				wq = NULL;
+				pr_info("AAAA: QCOM_SCM_WAITQ_SLEEP");
 				continue;
 			} else {
 				fill_wq_wake_ack_args(smc, smc_call_ctx);
@@ -154,6 +155,7 @@ static int scm_smc_do_quirk(struct device *dev, struct arm_smccc_args *smc,
 		} else if ((long)res->a0 < 0) {
 			/* Error, return to caller with original SMC call */
 			*smc = original;
+			pr_info("AAAA: Error, return to caller with original SMC call");
 			break;
 		} else {
 			/*
@@ -185,8 +187,10 @@ static int __scm_smc_do(struct device *dev, struct arm_smccc_args *smc,
 		mutex_lock(&qcom_scm_lock);
 		ret = scm_smc_do_quirk(dev, smc, res);
 		mutex_unlock(&qcom_scm_lock);
-		if (ret)
+		if (ret) {
+			pr_info("AAAA:, scm_smc_do");
 			return ret;
+		}
 
 		if (res->a0 == QCOM_SCM_V2_EBUSY) {
 			if (retry_count++ > QCOM_SCM_EBUSY_MAX_RETRY ||
