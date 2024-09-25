@@ -39,6 +39,7 @@ static ErrorList errors;
 * @param msg string containing the message to print
 * @param ... additional parameters that are used in msg according the format of printf
 */
+#if 0
 void logError(int force, const char *msg, ...)
 {
 	if (force == 1
@@ -52,6 +53,7 @@ void logError(int force, const char *msg, ...)
 		va_end(args);
 	}
 }
+#endif
 
 /**
 * Check if an error code is related to an I2C failure

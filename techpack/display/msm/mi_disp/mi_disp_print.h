@@ -57,19 +57,19 @@ void mi_disp_local_time_dbg(const char *format, ...);
 	} while (0)
 #else /* !MI_DISP_PRINT_ENABLE */
 #define DISP_WARN(fmt, ...)     \
-		printk(KERN_WARNING, fmt, ##__VA_ARGS__)
+		pr_debug(fmt, ##__VA_ARGS__)
 #define DISP_INFO(fmt, ...)     \
-		printk(KERN_INFO, fmt, ##__VA_ARGS__)
+		pr_debug(fmt, ##__VA_ARGS__)
 #define DISP_ERROR(fmt, ...)    \
-		printk(KERN_ERR, fmt, ##__VA_ARGS__)
+		pr_debug(fmt, ##__VA_ARGS__)
 #define DISP_DEBUG(fmt, ...)    \
 		pr_debug(fmt, ##__VA_ARGS__)
 #define DISP_TIME_WARN(fmt, ...)   \
-		printk(KERN_WARNING, fmt, ##__VA_ARGS__)
+		pr_debug(fmt, ##__VA_ARGS__)
 #define DISP_TIME_INFO(fmt, ...)   \
-		printk(KERN_INFO, fmt, ##__VA_ARGS__)
+		pr_debug(fmt, ##__VA_ARGS__)
 #define DISP_TIME_ERROR(fmt, ...)  \
-		printk(KERN_ERR, fmt, ##__VA_ARGS__)
+		pr_debug(fmt, ##__VA_ARGS__)
 #define DISP_TIME_DEBUG(fmt, ...)  \
 			pr_debug(fmt, ##__VA_ARGS__)
 #endif
