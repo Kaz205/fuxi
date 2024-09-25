@@ -127,20 +127,35 @@ void *qcom_mdt_read_metadata(struct device *dev, const struct firmware *fw, cons
 	ehdr = (struct elf32_hdr *)fw->data;
 	phdrs = (struct elf32_phdr *)(ehdr + 1);
 
-	if (ehdr->e_phnum < 2 || ehdr->e_phoff > fw->size ||
-	    (sizeof(phdrs) * ehdr->e_phnum > fw->size - ehdr->e_phoff))
+	if (ehdr->e_phnum < 2) {
+		dev_err(dev, "ehdr->e_phnum < 2");
 		return ERR_PTR(-EINVAL);
+	}
 
-	if (phdrs[0].p_type == PT_LOAD)
+	if (ehdr->e_phoff > fw->size) {
+		dev_err(dev, "ehdr->e_phoff > fw->size");
 		return ERR_PTR(-EINVAL);
+	}
+
+	if ((sizeof(phdrs) * ehdr->e_phnum > fw->size - ehdr->e_phoff)) {
+		dev_err(dev, "(sizeof(phdrs) * ehdr->e_phnum > fw->size - ehdr->e_phoff)");
+		return ERR_PTR(-EINVAL);
+	}
+
+	if (phdrs[0].p_type == PT_LOAD) {
+		dev_err(dev, "PT_LOAD\n");
+		return ERR_PTR(-EINVAL);
+	}
 
 	for (hash_index = 1; hash_index < ehdr->e_phnum; hash_index++) {
 		if (phdrs[hash_index].p_type != PT_LOAD &&
 		   (phdrs[hash_index].p_flags & QCOM_MDT_TYPE_MASK) == QCOM_MDT_TYPE_HASH)
 			break;
 	}
-	if (hash_index >= ehdr->e_phnum)
+	if (hash_index >= ehdr->e_phnum) {
+		dev_err(dev, "hash_index >= ehdr->e_phnum");
 		return ERR_PTR(-EINVAL);
+	}
 
 	ehdr_size = phdrs[0].p_filesz;
 	hash_size = phdrs[hash_index].p_filesz;
