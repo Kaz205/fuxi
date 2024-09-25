@@ -49,8 +49,10 @@ static void __scm_smc_do_quirk(const struct arm_smccc_args *smc,
 					smc->args[3], smc->args[4],
 					smc->args[5], quirk.state.a6,
 					smc->args[7], res, &quirk);
-			if (res->a0 == QCOM_SCM_INTERRUPTED)
+			if (res->a0 == QCOM_SCM_INTERRUPTED) {
+				pr_info("AAAA: QCOM_SCM_INTERRUPTED");
 				a0 = res->a0;
+			}
 		} while (res->a0 == QCOM_SCM_INTERRUPTED);
 	}
 
