@@ -25,6 +25,7 @@
 #include <linux/thermal.h>
 #include <linux/soc/qcom/pmic_glink.h>
 #include <linux/soc/qcom/battery_charger.h>
+#include <linux/soc/qcom/panel_event_notifier.h>
 #include <linux/kernel.h>
 #include <linux/notifier.h>
 
@@ -8430,6 +8431,90 @@ static int battery_chg_ship_mode(struct notifier_block *nb, unsigned long code,
 	return NOTIFY_DONE;
 }
 
+static void panel_event_notifier_callback(enum panel_event_notifier_tag tag,
+			struct panel_event_notification *notification, void *data)
+{
+	struct battery_chg_dev *bcdev = data;
+
+	if (!notification) {
+		pr_debug("Invalid panel notification\n");
+		return;
+	}
+
+	if(notification->notif_data.early_trigger) {
+		return;
+	}
+
+	pr_debug("panel event received, type: %d\n", notification->notif_type);
+	switch (notification->notif_type) {
+	case DRM_PANEL_EVENT_BLANK:
+	case DRM_PANEL_EVENT_BLANK_LP:
+		bcdev->blank_state = 1; 
+		break;
+	case DRM_PANEL_EVENT_UNBLANK:
+		bcdev->blank_state = 0;
+		break;
+	case DRM_PANEL_EVENT_FPS_CHANGE:
+		return;
+	default:
+		pr_debug("Ignore panel event: %d\n", notification->notif_type);
+		break;
+	}
+}
+
+static int battery_chg_register_panel_notifier(struct battery_chg_dev *bcdev)
+{
+	struct device_node *pnode;
+	struct drm_panel *panel, *active_panel = NULL;
+	void *cookie = NULL;
+	int i, count, rc;
+
+	pnode = of_find_node_by_name(NULL, "charge-screen");
+	if (!pnode) {
+		return 0;
+	}
+	count = of_count_phandle_with_args(pnode, "panel", NULL);
+	if (count <= 0)
+		return 0;
+
+	for (i = 0; i < count; i++) {
+		pnode = of_parse_phandle(pnode, "panel", i);
+		if (!pnode) {
+			return 0;
+		}
+
+		panel = of_drm_find_panel(pnode);
+		of_node_put(pnode);
+		if (!IS_ERR(panel)) {
+			active_panel = panel;
+			break;
+		}
+	}
+
+	if (!active_panel) {
+		rc = PTR_ERR(panel);
+		if (rc != -EPROBE_DEFER)
+			dev_err(bcdev->dev, "Failed to find active panel, rc=%d\n");
+		return rc;
+	}
+
+	cookie = panel_event_notifier_register(
+			PANEL_EVENT_NOTIFICATION_PRIMARY,
+			PANEL_EVENT_NOTIFIER_CLIENT_BATTERY_CHARGER,
+			active_panel,
+			panel_event_notifier_callback,
+			(void *)bcdev);
+	if (IS_ERR(cookie)) {
+		rc = PTR_ERR(cookie);
+		dev_err(bcdev->dev, "Failed to register panel event notifier, rc=%d\n", rc);
+		return rc;
+	}
+
+	pr_debug("register panel notifier successful\n");
+	bcdev->notifier_cookie = cookie;
+	return 0;
+}
+
 static int
 battery_chg_get_max_charge_cntl_limit(struct thermal_cooling_device *tcd,
 					unsigned long *state)
@@ -8659,6 +8744,10 @@ static int battery_chg_probe(struct platform_device *pdev)
 	INIT_DELAYED_WORK( &bcdev->batt_update_work, xm_batt_update_work);
 	bcdev->dev = dev;
 
+	rc = battery_chg_register_panel_notifier(bcdev);
+	if (rc < 0)
+		return rc;
+
 	client_data.id = MSG_OWNER_BC;
 	client_data.name = "battery_charger";
 	client_data.msg_cb = battery_chg_callback;
@@ -8771,6 +8860,8 @@ error:
 	unregister_reboot_notifier(&bcdev->reboot_notifier);
 	unregister_reboot_notifier(&bcdev->shutdown_notifier);
 reg_error:
+	if (bcdev->notifier_cookie)
+		panel_event_notifier_unregister(bcdev->notifier_cookie);
 	return rc;
 }
 
@@ -8782,6 +8873,9 @@ static int battery_chg_remove(struct platform_device *pdev)
 	atomic_set(&bcdev->state, PMIC_GLINK_STATE_DOWN);
 	bcdev->initialized = false;
 	up_write(&bcdev->state_sem);
+
+	if (bcdev->notifier_cookie)
+		panel_event_notifier_unregister(bcdev->notifier_cookie);
 
 	device_init_wakeup(bcdev->dev, false);
 	debugfs_remove_recursive(bcdev->debugfs_dir);
