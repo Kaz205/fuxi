@@ -834,10 +834,9 @@ static void mhi_netdev_status_cb(struct mhi_device *mhi_dev,
 	mhi_netdev->napi_scheduled = true;
 }
 
-#ifdef CONFIG_DEBUG_FS
-
 struct dentry *dentry;
 
+#ifdef CONFIG_DEBUG_FS
 static int mhi_netdev_debugfs_stats_show(struct seq_file *m, void *d)
 {
 	struct mhi_netdev *mhi_netdev = m->private;
