@@ -236,8 +236,25 @@ static int __qcom_mdt_load(struct device *dev, const struct firmware *fw, const 
 	int ret = 0;
 	int i;
 
-	if (!fw || !mem_region || !mem_phys || !mem_size)
+	if (!fw) {
+		dev_err(dev, "fw not found");
 		return -EINVAL;
+	}
+
+	if (!mem_region) {
+		dev_err(dev, "mem region not found");
+		return -EINVAL;
+	}
+
+	if (!mem_phys) {
+		dev_err(dev, "mem_phys not found");
+		return -EINVAL;
+	}
+
+	if (!mem_size) {
+		dev_err(dev, "mem_size not found");
+		return -EINVAL;
+	}
 
 	is_split = qcom_mdt_bins_are_split(fw);
 	ehdr = (struct elf32_hdr *)fw->data;
