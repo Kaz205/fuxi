@@ -1485,10 +1485,10 @@ static void fg_update_status(struct vir_bq_fg_chip *bq)
 	bq->batt_temp_s = battmngr_qtiops_get_fg2_temp(bq->battmg_dev);
 
 	mutex_unlock(&bq->data_lock);
-	virtualfg_info("SOC:%d,Volt:%d,Cur:%d,Temp:%d,RM:%d,FC:%d,FAST:%d,Raw_soc:%d,Charging status:%d",
+	virtualfg_dbg("SOC:%d,Volt:%d,Cur:%d,Temp:%d,RM:%d,FC:%d,FAST:%d,Raw_soc:%d,Charging status:%d",
 	       bq->batt_soc, bq->batt_volt, bq->batt_curr, bq->batt_temp,
 	       bq->batt_rm, bq->batt_fcc, bq->fast_mode,bq->raw_soc,bq->batt_st);
-	virtualfg_info("Print master info. Volt_m:%d, Curr_m:%d, Temp_m:%d, Raw_soc_m:%d\n",
+	virtualfg_dbg("Print master info. Volt_m:%d, Curr_m:%d, Temp_m:%d, Raw_soc_m:%d\n",
 		bq->batt_volt_m,bq->batt_curr_m,bq->batt_temp_m,bq->raw_soc_m);
 	virtualfg_info("Print slave info. Volt_s:%d, Curr_s:%d, Temp_s:%d, Raw_soc_s:%d\n",
 		bq->batt_volt_s,bq->batt_curr_s,bq->batt_temp_s,bq->raw_soc_s);
