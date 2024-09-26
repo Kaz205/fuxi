@@ -3,6 +3,7 @@
  * Copyright (c) 2021 The Linux Foundation. All rights reserved.
  */
 
+#include <linux/errno.h>
 #include <linux/trace.h>
 #include "adreno.h"
 
