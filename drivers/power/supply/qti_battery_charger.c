@@ -956,7 +956,7 @@ static int get_property_id(struct psy_state *pst,
 			return i;
 
 	if (pst->psy)
-		pr_err("No property id for property %d in psy %s\n", prop,
+		pr_debug("No property id for property %d in psy %s\n", prop,
 			pst->psy->desc->name);
 
 	return -ENOENT;
@@ -2003,7 +2003,7 @@ static u32 xm_get_battery_capacity(struct battery_chg_dev *bcdev) {
 
 	ret_soc = xm_calculate_soc(batt_soc, xm_soc);
 
-	pr_info("batt_soc %d, xm_soc %d, ret_soc %d", batt_soc, xm_soc, ret_soc);
+	pr_debug("batt_soc %d, xm_soc %d, ret_soc %d", batt_soc, xm_soc, ret_soc);
 
 	return ret_soc;
 }

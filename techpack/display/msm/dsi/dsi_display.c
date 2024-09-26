@@ -7964,7 +7964,7 @@ int dsi_display_set_mode(struct dsi_display *display,
 		goto error;
 	}
 
-	DSI_INFO("mdp_transfer_time=%d, hactive=%d, vactive=%d, fps=%d, clk_rate=%llu\n",
+	DSI_DEBUG("mdp_transfer_time=%d, hactive=%d, vactive=%d, fps=%d, clk_rate=%llu\n",
 			adj_mode.priv_info->mdp_transfer_time_us,
 			timing.h_active, timing.v_active, timing.refresh_rate,
 			adj_mode.priv_info->clk_rate_hz);
@@ -9012,7 +9012,7 @@ int dsi_display_post_enable(struct dsi_display *display)
 		return -EINVAL;
 	}
 
-	DSI_INFO("%s", __func__);
+	DSI_DEBUG("%s", __func__);
 	mutex_lock(&display->display_lock);
 	panel = display->panel;
 	mode = panel->cur_mode;
