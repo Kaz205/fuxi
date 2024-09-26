@@ -4760,7 +4760,6 @@ static void register_rproc_restart_level_notifier(void)
 
 static void unregister_rproc_restart_level_notifier(void)
 {
-	unregister_trace_android_vh_rproc_recovery_set(rproc_restart_level_notifier, NULL);
 }
 
 static int icnss_probe(struct platform_device *pdev)

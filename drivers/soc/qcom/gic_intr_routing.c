@@ -624,7 +624,6 @@ static int gic_intr_routing_probe(struct platform_device *pdev)
 
 static int gic_intr_routing_remove(struct platform_device *pdev)
 {
-	unregister_trace_android_vh_gic_v3_set_affinity(
 		trace_gic_v3_set_affinity, NULL);
 
 	cpuhp_remove_state(CPUHP_AP_ONLINE_DYN);

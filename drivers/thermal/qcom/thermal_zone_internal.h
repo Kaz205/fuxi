@@ -56,8 +56,6 @@ static inline __maybe_unused void thermal_vendor_hooks_init(void)
 
 static inline __maybe_unused void thermal_vendor_hooks_exit(void)
 {
-	unregister_trace_android_vh_disable_thermal_cooling_stats(
-			disable_cdev_stats, NULL);
 }
 
 #endif  // __QTI_THERMAL_ZONE_INTERNAL_H
