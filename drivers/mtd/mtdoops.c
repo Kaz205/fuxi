@@ -462,7 +462,7 @@ static void mtdoops_do_dump(struct kmsg_dumper *dumper,
 static void mtdoops_do_dump_kmsgdump(struct kmsg_dumper *dumper,
 				enum kmsg_dump_reason reason)
 {
-	//mtdoops_do_dump(dumper, (enum mtd_dump_reason)reason);
+	mtdoops_do_dump(dumper, (enum mtd_dump_reason)reason);
 }
 
 void mtdoops_do_dump_if(int reason)
