@@ -477,6 +477,7 @@ static int mtdoops_reboot_nb_handle(struct notifier_block *this, unsigned long e
 {
 	enum mtd_dump_reason reason;
 
+	return NOTIFY_OK;
 	if (event == SYS_RESTART)
 		reason = MTD_DUMP_RESTART;
 	else if(event == SYS_POWER_OFF)
