@@ -122,7 +122,7 @@ CONFIG_TASK_IO_ACCOUNTING=y
 # CONFIG_PSI is not set
 # end of CPU/Task time and stats accounting
 
-# CONFIG_CPU_ISOLATION is not set
+CONFIG_CPU_ISOLATION=y
 
 #
 # RCU Subsystem
