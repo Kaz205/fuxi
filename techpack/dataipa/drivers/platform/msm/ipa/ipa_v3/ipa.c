@@ -534,7 +534,9 @@ static struct notifier_block ipa_pm_notifier = {
 
 static const struct dev_pm_ops ipa_pm_ops = {
 	.suspend_late = ipa3_ap_suspend,
+#ifdef CONFIG_HIBERNATION
 	.freeze_late = ipa3_ap_freeze,
+#endif
 	.resume_early = ipa3_ap_resume,
 	.restore_early = ipa3_ap_resume,
 };
