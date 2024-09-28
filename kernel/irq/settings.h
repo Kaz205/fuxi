@@ -186,7 +186,7 @@ static inline void irq_settings_set_no_debug(struct irq_desc *desc)
 
 static inline bool irq_settings_no_debug(struct irq_desc *desc)
 {
-	return desc->status_use_accessors & _IRQ_NO_DEBUG;
+	return true;
 }
 
 static inline bool irq_settings_is_raw(struct irq_desc *desc)
