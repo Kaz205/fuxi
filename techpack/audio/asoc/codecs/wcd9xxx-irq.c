@@ -183,6 +183,7 @@ bool wcd9xxx_lock_sleep(
 		pr_debug("%s: holding wake lock\n", __func__);
 		cpu_latency_qos_update_request(&wcd9xxx_res->pm_qos_req,
 				      CPU_IDLE_LATENCY);
+		pr_info("AAAA: qos request %s", __func__);
 		pm_stay_awake(wcd9xxx_res->dev);
 	}
 	mutex_unlock(&wcd9xxx_res->pm_lock);

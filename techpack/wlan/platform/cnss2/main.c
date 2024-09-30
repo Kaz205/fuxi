@@ -709,6 +709,7 @@ void cnss_request_pm_qos(struct device *dev, u32 qos_val)
 		return;
 
 	cpu_latency_qos_add_request(&plat_priv->qos_request, qos_val);
+	pr_info("AAAA: qos request %s", __func__);
 }
 EXPORT_SYMBOL(cnss_request_pm_qos);
 

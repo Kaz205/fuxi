@@ -4193,6 +4193,7 @@ static int sdhci_msm_update_qos_constraints(struct qos_cpu_group *qcg,
 
 	for_each_cpu(cpu, &qcg->mask) {
 		err = dev_pm_qos_update_request(qos_req, vote);
+		pr_info("AAAA: qos request %s %d", __func__, vote);
 		if (err < 0)
 			return err;
 		++qos_req;

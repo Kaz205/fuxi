@@ -953,6 +953,7 @@ static void msm_audio_update_qos_request(u32 latency)
 		for_each_cpu(cpu, cluster_cpu_mask) {
 			ret = dev_pm_qos_update_request(
 					&msm_audio_req[cpu], latency);
+			pr_info("AAAA: qos request %s %d", __func__, latency);
 			if (1 == ret ) {
 				pr_debug("%s: updated latency of core %d to %u.\n",
 								__func__, cpu, latency);

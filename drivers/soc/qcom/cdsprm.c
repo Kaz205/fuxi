@@ -702,6 +702,7 @@ static void set_qos_latency(int latency)
 				err = dev_pm_qos_update_request(
 						&gcdsprm.dev_pm_qos_req[ii],
 						latency);
+				pr_info("AAAA: qos request %s %d", __func__, latency);
 			}
 
 			if (err < 0) {

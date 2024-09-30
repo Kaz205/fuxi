@@ -3966,6 +3966,7 @@ static bool swrm_lock_sleep(struct swr_mstr_ctrl *swrm)
 		dev_dbg(swrm->dev, "%s: holding wake lock\n", __func__);
 		cpu_latency_qos_update_request(&swrm->pm_qos_req,
 					 CPU_IDLE_LATENCY);
+		pr_info("AAAA: qos request %s", __func__);
 		pm_stay_awake(swrm->dev);
 	}
 	mutex_unlock(&swrm->pm_lock);
