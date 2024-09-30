@@ -107,8 +107,6 @@ struct dma_buf *cma_heap_allocate(struct dma_heap *heap,
 	if (align > cma_heap->max_align)
 		align = cma_heap->max_align;
 
-	INIT_LIST_HEAD(&helper_buffer->iommu_data.map_list);
-	mutex_init(&helper_buffer->iommu_data.lock);
 	helper_buffer = &info->buf;
 	helper_buffer->heap = heap;
 	INIT_LIST_HEAD(&helper_buffer->attachments);

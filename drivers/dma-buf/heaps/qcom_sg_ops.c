@@ -60,8 +60,7 @@ static struct sg_table *dup_sg_table(struct sg_table *table)
 static int qcom_sg_attach(struct dma_buf *dmabuf,
 			  struct dma_buf_attachment *attachment)
 {
-	struct qcom_sg_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
-						     iommu_data);
+	struct qcom_sg_buffer *buffer = dmabuf->priv;
 	struct dma_heap_attachment *a;
 	struct sg_table *table;
 
@@ -92,8 +91,7 @@ static int qcom_sg_attach(struct dma_buf *dmabuf,
 static void qcom_sg_detach(struct dma_buf *dmabuf,
 			   struct dma_buf_attachment *attachment)
 {
-	struct qcom_sg_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
-						     iommu_data);
+	struct qcom_sg_buffer *buffer = dmabuf->priv;
 	struct dma_heap_attachment *a = attachment->priv;
 
 	mutex_lock(&buffer->lock);
@@ -115,7 +113,7 @@ static struct sg_table *qcom_sg_map_dma_buf(struct dma_buf_attachment *attachmen
 	unsigned long attrs = attachment->dma_map_attrs;
 	int ret;
 
-	buffer = container_of(attachment->dmabuf->priv, typeof(*buffer), iommu_data);
+	buffer = attachment->dmabuf->priv;
 	vmperm = buffer->vmperm;
 
 	/* Prevent map/unmap during begin/end_cpu_access */
@@ -160,7 +158,7 @@ static void qcom_sg_unmap_dma_buf(struct dma_buf_attachment *attachment,
 	struct mem_buf_vmperm *vmperm;
 	unsigned long attrs = attachment->dma_map_attrs;
 
-	buffer = container_of(attachment->dmabuf->priv, typeof(*buffer), iommu_data);
+	buffer = attachment->dmabuf->priv;
 	vmperm = buffer->vmperm;
 
 	/* Prevent map/unmap during begin/end_cpu_access */
@@ -182,8 +180,7 @@ static void qcom_sg_unmap_dma_buf(struct dma_buf_attachment *attachment,
 static int qcom_sg_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
 					    enum dma_data_direction direction)
 {
-	struct qcom_sg_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
-						     iommu_data);
+	struct qcom_sg_buffer *buffer = dmabuf->priv;
 	struct dma_heap_attachment *a;
 
 	if (buffer->uncached)
@@ -214,8 +211,7 @@ static int qcom_sg_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
 static int qcom_sg_dma_buf_end_cpu_access(struct dma_buf *dmabuf,
 					  enum dma_data_direction direction)
 {
-	struct qcom_sg_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
-						     iommu_data);
+	struct qcom_sg_buffer *buffer = dmabuf->priv;
 	struct dma_heap_attachment *a;
 
 	if (buffer->uncached)
@@ -306,8 +302,7 @@ static int qcom_sg_dma_buf_begin_cpu_access_partial(struct dma_buf *dmabuf,
 						    unsigned int offset,
 						    unsigned int len)
 {
-	struct qcom_sg_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
-						     iommu_data);
+	struct qcom_sg_buffer *buffer = dmabuf->priv;
 	struct dma_heap_attachment *a;
 	int ret = 0;
 
@@ -342,8 +337,7 @@ static int qcom_sg_dma_buf_end_cpu_access_partial(struct dma_buf *dmabuf,
 					      unsigned int offset,
 					      unsigned int len)
 {
-	struct qcom_sg_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
-						     iommu_data);
+	struct qcom_sg_buffer *buffer = dmabuf->priv;
 	struct dma_heap_attachment *a;
 	int ret = 0;
 
@@ -394,8 +388,7 @@ static const struct vm_operations_struct qcom_sg_vm_ops = {
 
 static int qcom_sg_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
 {
-	struct qcom_sg_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
-						     iommu_data);
+	struct qcom_sg_buffer *buffer = dmabuf->priv;
 	struct sg_table *table = &buffer->sg_table;
 	struct scatterlist *sg;
 	unsigned long addr = vma->vm_start;
@@ -473,8 +466,7 @@ static void *qcom_sg_do_vmap(struct qcom_sg_buffer *buffer)
 
 static int qcom_sg_vmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
 {
-	struct qcom_sg_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
-						     iommu_data);
+	struct qcom_sg_buffer *buffer = dmabuf->priv;
 	void *vaddr;
 	int ret = 0;
 
@@ -509,8 +501,7 @@ out:
 
 static void qcom_sg_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
 {
-	struct qcom_sg_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
-						     iommu_data);
+	struct qcom_sg_buffer *buffer = dmabuf->priv;
 
 	mutex_lock(&buffer->lock);
 	if (!--buffer->vmap_cnt) {
@@ -524,20 +515,18 @@ static void qcom_sg_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
 
 static void qcom_sg_release(struct dma_buf *dmabuf)
 {
-	struct qcom_sg_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
-						     iommu_data);
+	struct qcom_sg_buffer *buffer = dmabuf->priv;
 
 	if (mem_buf_vmperm_release(buffer->vmperm))
 		return;
 
-	msm_dma_buf_freed(&buffer->iommu_data);
+	msm_dma_buf_freed(buffer);
 	buffer->free(buffer);
 }
 
 static struct mem_buf_vmperm *qcom_sg_lookup_vmperm(struct dma_buf *dmabuf)
 {
-	struct qcom_sg_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer),
-						     iommu_data);
+	struct qcom_sg_buffer *buffer = dmabuf->priv;
 
 	return buffer->vmperm;
 }
